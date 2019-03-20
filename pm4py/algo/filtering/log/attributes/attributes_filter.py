@@ -255,6 +255,42 @@ def apply_events(log, values, parameters=None):
     return filtered_log
 
 
+def apply_remove_subsequent_doubles(log, parameters=None):
+    """
+    Filter log by keeping first of subsequent similar events
+
+    Parameters
+    -----------
+    log
+        log
+    parameters
+        Parameters of the algorithm, including:
+            activity_key -> Attribute identifying the activity in the log
+
+    Returns
+    -----------
+    filtered_log
+        Filtered log
+    """
+    if parameters is None:
+        parameters = {}
+
+    attribute_key = parameters[
+        PARAMETER_CONSTANT_ATTRIBUTE_KEY] if PARAMETER_CONSTANT_ATTRIBUTE_KEY in parameters else DEFAULT_NAME_KEY
+
+    filtered_log = EventLog()
+    for trace in log:
+        new_trace = Trace()
+        new_trace.append(trace[0])
+        for j in range(1, len(trace)):
+            if trace[j - 1][attribute_key] != trace[j][attribute_key]:
+                new_trace.append(trace[j])
+        for attr in trace.attributes:
+            new_trace.attributes[attr] = trace.attributes[attr]
+        filtered_log.append(new_trace)
+    return filtered_log
+
+
 def apply(log, values, parameters=None):
     """
     Filter log by keeping only traces that has/has not events with an attribute value that belongs to the provided

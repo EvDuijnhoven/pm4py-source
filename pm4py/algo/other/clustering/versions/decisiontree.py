@@ -17,8 +17,8 @@ def apply(log, parameters=None):
         Trace log
     parameters
         Parameters of the algorithm, including:
-            pca_components -> Number of the components for the PCA
-            dbscan_eps -> EPS value for the DBScan clustering
+            pca_params -> Parameters passed to the PCA
+            dbscan_params -> Parameters passed to the DBScan clustering
             str_tr_attr -> String trace attributes to consider in feature representation
             str_ev_attr -> String event attributes to consider in feature representation
             num_tr_attr -> Numeric trace attributes to consider in feature representation
@@ -33,9 +33,12 @@ def apply(log, parameters=None):
     if parameters is None:
         parameters = {}
 
-    pca_components = parameters["pca_components"] if "pca_components" in parameters else 3
-    dbscan_eps = parameters["dbscan_eps"] if "dbscan_eps" in parameters else 0.3
-
+    pca_params = {'n_components': 3}
+    if "pca_params" in parameters:
+        pca_params.update(parameters["pca_params"])
+    dbscan_params = {'eps': 0.3}
+    if "dbscan_params" in parameters:
+        dbscan_params.update(parameters['dbscan_params'])
     log_list = []
 
     str_tr_attr = parameters["str_tr_attr"] if "str_tr_attr" in parameters else copy([])
@@ -47,11 +50,11 @@ def apply(log, parameters=None):
     data, feature_names = get_log_representation.get_representation(log, str_tr_attr, str_ev_attr, num_tr_attr,
                                                                     num_ev_attr, str_evsucc_attr=str_evsucc_attr)
 
-    pca = PCA(n_components=pca_components)
+    pca = PCA(**pca_params)
     pca.fit(data)
     data2d = pca.transform(data)
 
-    db = DBSCAN(eps=dbscan_eps).fit(data2d)
+    db = DBSCAN(**dbscan_params).fit(data2d)
     labels = db.labels_
 
     already_seen = {}

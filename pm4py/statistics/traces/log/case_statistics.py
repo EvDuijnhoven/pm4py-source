@@ -1,4 +1,5 @@
 from pm4py.algo.filtering.log.variants import variants_filter
+from pm4py.algo.filtering.log.variants import sub_variants_filter
 from pm4py.objects.log.util.xes import DEFAULT_TIMESTAMP_KEY
 from pm4py.objects.log.util.xes import DEFAULT_TRACEID_KEY
 from pm4py.statistics.traces.common import case_duration as case_duration_commons
@@ -30,14 +31,49 @@ def get_variant_statistics(log, parameters=None):
     if parameters is None:
         parameters = {}
     max_variants_to_return = parameters["max_variants_to_return"] if "max_variants_to_return" in parameters else None
-    varnt = parameters["variants"] if "variants" in parameters else variants_filter.get_variants(log,
-                                                                                                 parameters=parameters)
+    varnt = parameters["variants"] if "variants" in parameters else variants_filter.get_variants_from_log_trace_idx(log, parameters)
     variants_list = []
     for var in varnt:
         variants_list.append({"variant": var, "count": len(varnt[var])})
     variants_list = sorted(variants_list, key=lambda x: x["count"], reverse=True)
     if max_variants_to_return:
         variants_list = variants_list[:min(len(variants_list), max_variants_to_return)]
+    return variants_list
+
+
+def get_sub_variant_statistics(log, parameters=None):
+    """
+    Gets a dictionary whose key is the variant and as value there
+    is the list of traces that share the variant
+
+    Parameters
+    ----------
+    log
+        Log
+    parameters
+        Parameters of the algorithm, including:
+            activity_key -> Attribute identifying the activity in the log
+            sub_variant_length -> Length of the sub variants
+            count_unique_traces -> If true, only count unique traces
+            max_sub_variants_to_return -> Maximum number of variants to return
+            variants -> If provided, avoid recalculation of the variants
+
+    Returns
+    ----------
+    variants_list
+        List of variants along the statistics
+    """
+
+    if parameters is None:
+        parameters = {}
+    max_sub_variants_to_return = parameters["max_sub_variants_to_return"] if "max_sub_variants_to_return" in parameters else None
+    varnt = parameters["sub_variants"] if "sub_variants" in parameters else sub_variants_filter.get_sub_variants(log, parameters)
+    variants_list = []
+    for var in varnt:
+        variants_list.append({"sub_variant": var, "count": len(varnt[var])})
+    variants_list = sorted(variants_list, key=lambda x: x["count"], reverse=True)
+    if max_sub_variants_to_return:
+        variants_list = variants_list[:min(len(variants_list), max_sub_variants_to_return)]
     return variants_list
 
 

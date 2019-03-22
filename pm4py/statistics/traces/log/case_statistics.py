@@ -1,5 +1,5 @@
 from pm4py.algo.filtering.log.variants import variants_filter
-from pm4py.algo.filtering.log.variants import sub_variants_filter
+from pm4py.algo.filtering.log.sub_variants import sub_variants_filter
 from pm4py.objects.log.util.xes import DEFAULT_TIMESTAMP_KEY
 from pm4py.objects.log.util.xes import DEFAULT_TRACEID_KEY
 from pm4py.statistics.traces.common import case_duration as case_duration_commons
@@ -31,7 +31,7 @@ def get_variant_statistics(log, parameters=None):
     if parameters is None:
         parameters = {}
     max_variants_to_return = parameters["max_variants_to_return"] if "max_variants_to_return" in parameters else None
-    varnt = parameters["variants"] if "variants" in parameters else variants_filter.get_variants_from_log_trace_idx(log, parameters)
+    varnt = parameters["variants"] if "variants" in parameters else variants_filter.get_variants(log, parameters)
     variants_list = []
     for var in varnt:
         variants_list.append({"variant": var, "count": len(varnt[var])})
@@ -229,6 +229,7 @@ def get_all_casedurations(log, parameters=None):
     if to_sort:
         return sorted(duration_values)
     return duration_values
+
 
 def get_first_quartile_caseduration(log, parameters=None):
     """

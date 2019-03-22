@@ -37,14 +37,16 @@ def export(log, output_file_path, parameters=None):
     output_file_path:
         Output file path
     parameters
-        Possible parameters of the algorithm
+        Parameters of the algorithm, including
+            to_csv_params -> arguments sent to pd.to_csv
     """
     if parameters is None:
         parameters = {}
-    del parameters
+
+    to_csv_params = parameters['to_csv_params'] if 'to_csv_params' in parameters else []
 
     df = get_dataframe_from_event_stream(log)
-    df.to_csv(output_file_path, index=False)
+    df.to_csv(output_file_path, index=False, **to_csv_params)
 
 
 def export_log(log, output_file_path, parameters=None):

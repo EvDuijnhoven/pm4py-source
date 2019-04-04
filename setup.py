@@ -46,7 +46,7 @@ setup(
               'pm4py.algo.filtering.pandas.variants', 'pm4py.algo.filtering.pandas.timestamp',
               'pm4py.algo.filtering.pandas.attributes', 'pm4py.algo.filtering.pandas.auto_filter',
               'pm4py.algo.filtering.pandas.end_activities', 'pm4py.algo.filtering.pandas.start_activities',
-              'pm4py.algo.other.clustering',
+              'pm4py.algo.other.clustering', 'pm4py.algo.other.clustering.versions',
               'pm4py.algo.simulation', 'pm4py.algo.simulation.playout', 'pm4py.algo.simulation.playout.versions',
               'pm4py.algo.simulation.playout.data_structures', 'pm4py.algo.simulation.tree_generator',
               'pm4py.algo.simulation.tree_generator.versions', 'pm4py.algo.conformance',

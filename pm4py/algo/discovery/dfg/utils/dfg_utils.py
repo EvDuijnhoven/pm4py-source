@@ -245,6 +245,33 @@ def get_max_activity_count(dfg, act):
     return max_value
 
 
+def get_utility_value_edge(dictio, act, val):
+    """
+    Get utility value for an edge
+
+    Parameters
+    ------------
+    dictio
+        either ingoing or outgoing edges
+    act
+        Activity
+    val
+        The current value
+
+    """
+    utility_value = 0
+    if act in dictio:
+        min_count = dictio[act][min(dictio[act], key=dictio[act].get)]
+        max_count = dictio[act][max(dictio[act], key=dictio[act].get)]
+        if min_count == max_count:
+            utility_value = 1
+        else :
+            utility_value = (
+                (val - min_count) /
+                max(1, max_count - min_count))
+    return utility_value
+
+
 def sum_ingoutg_val_activ(dictio, activity):
     """
     Gets the sum of ingoing/outgoing values of an activity
